@@ -14,7 +14,7 @@
 		63A58C472DD6E7C700C6BC9D /* Exceptions for "Combine-With-UIKit" folder in "Combine-With-UIKit" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Application/Info.plist,
 			);
 			target = 63A58C342DD6E7C500C6BC9D /* Combine-With-UIKit */;
 		};
