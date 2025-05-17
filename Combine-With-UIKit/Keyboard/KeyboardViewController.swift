@@ -23,9 +23,9 @@ class KeyboardViewController: UIViewController, UITextFieldDelegate {
     private func setActions() {
         keyboardView.textField.addTarget(self, action: #selector(textFieldDidChange(_ :)), for: .editingChanged)
         
-         viewModel.$input
+         viewModel.$isInputValid
             .sink {
-                if $0.count > 4 {
+                if $0 {
                     self.keyboardView.button.available()
                 } else {
                     self.keyboardView.button.unavailable()
