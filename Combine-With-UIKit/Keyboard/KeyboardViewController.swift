@@ -25,7 +25,7 @@ class KeyboardViewController: UIViewController, UITextFieldDelegate {
         
          viewModel.$input
             .sink {
-                if $0.count > 5 {
+                if $0.count > 4 {
                     self.keyboardView.button.available()
                 } else {
                     self.keyboardView.button.unavailable()
