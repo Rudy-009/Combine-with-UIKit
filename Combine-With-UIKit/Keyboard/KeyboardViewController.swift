@@ -21,26 +21,41 @@ class KeyboardViewController: UIViewController, UITextFieldDelegate {
     }
     
     private func setActions() {
-        keyboardView.textField.addTarget(self, action: #selector(textFieldDidChange(_ :)), for: .editingChanged)
+        // keyboardView.textField.addTarget(self, action: #selector(textFieldDidChange(_ :)), for: .editingChanged)
+        // UITextField를 Combine Publisher로 변환
+        keyboardView.textField.textPublisher()
+            .assign(to: \.input, on: viewModel)
+            .store(in: &cancellables)
         
-         viewModel.$isInputValid
-            .sink {
-                if $0 {
-                    self.keyboardView.button.available()
+        viewModel.$isInputValid
+            .sink { [weak self] isValid in
+                if isValid {
+                    self?.keyboardView.button.available()
                 } else {
-                    self.keyboardView.button.unavailable()
+                    self?.keyboardView.button.unavailable()
                 }
             }
             .store(in: &cancellables)
         
-        keyboardView.button.addAction(UIAction { // 요구사항에는 없었지만, 구독을 취소하는 코드를 구현
-            [weak self] _ in self?.cancellables.removeAll()},
+        keyboardView.button.addAction(
+            // 요구사항에는 없었지만, 구독을 취소하는 코드를 구현
+            UIAction { [weak self] _ in
+                self?.cancellables.removeAll() // 다른 뷰로 넘어갈 때, 쓰면 좋을 코드
+            },
             for: .touchUpInside)
     }
+}
+
+// UITextField를 위한 Publisher 확장
+extension UITextField {
     
-    @objc
-    private func textFieldDidChange(_ textField: UITextField) {
-        viewModel.input = textField.text ?? ""
+    func textPublisher() -> AnyPublisher<String, Never> {
+        NotificationCenter.default
+            .publisher(for: UITextField.textDidChangeNotification, object: self)
+            .compactMap { ($0.object as? UITextField)?.text ?? "" }
+            .eraseToAnyPublisher()
     }
-        
+    
+    
+    
 }
