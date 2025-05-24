@@ -10,6 +10,13 @@ import SnapKit
 
 class KeyboardView: UIView {
     
+    public lazy var label: UILabel = {
+       let label = UILabel()
+        label.font = .systemFont(ofSize: 20, weight: .bold)
+        label.textColor = .black
+        return label
+    }()
+    
     public lazy var textField: UITextField = {
         let textField = UITextField()
         textField.borderStyle = .roundedRect
@@ -25,8 +32,15 @@ class KeyboardView: UIView {
     }
     
     private func setup() {
+        self.addSubview(label)
         self.addSubview(textField)
         self.addSubview(button)
+        
+        label.snp.makeConstraints { make in
+            make.height.equalTo(60)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.centerY.equalToSuperview().offset(100)
+        }
         
         textField.snp.makeConstraints { make in
             make.height.equalTo(60)

@@ -21,7 +21,6 @@ class KeyboardViewController: UIViewController, UITextFieldDelegate {
     }
     
     private func setActions() {
-        // keyboardView.textField.addTarget(self, action: #selector(textFieldDidChange(_ :)), for: .editingChanged)
         // UITextField를 Combine Publisher로 변환
         keyboardView.textField.textPublisher()
             .assign(to: \.input, on: viewModel)
