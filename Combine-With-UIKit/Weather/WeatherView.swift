@@ -17,16 +17,14 @@ class WeatherView: UIView {
         return label
     }()
     
-    public lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 17 // 셀 간 간격
-        layout.itemSize = CGSize(width: UIScreen.main.bounds.width - 68, height: 65)
-        
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = .clear
-        cv.register(WeatherCollectionViewCell.self, forCellWithReuseIdentifier: WeatherCollectionViewCell.identifier)
-        cv.showsVerticalScrollIndicator = false
-        return cv
+    public let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.register(WeatherForecastCell.self, forCellReuseIdentifier: WeatherForecastCell.identifier)
+        // 테이블 뷰의 rowHeight를 동적으로 설정하거나 고정 값으로 설정할 수 있습니다.
+        // tableView.rowHeight = UITableView.automaticDimension
+        // tableView.estimatedRowHeight = 100 // 예상 높이, automaticDimension과 함께 사용
+        return tableView
     }()
     
     override init(frame: CGRect) {
@@ -36,11 +34,18 @@ class WeatherView: UIView {
     
     private func setup() {
         self.addSubview(label)
+        self.addSubview(tableView)
         
         label.snp.makeConstraints { make in
             make.height.equalTo(60)
             make.leading.trailing.equalToSuperview().inset(20)
-            make.centerY.equalToSuperview().offset(100)
+            make.top.equalToSuperview().offset(100)
+        }
+
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(label.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(-20)
+            make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-20)
         }
     }
     
@@ -49,18 +54,3 @@ class WeatherView: UIView {
     }
 }
 
-final class WeatherCollectionViewCell: UICollectionViewCell {
-    
-    static let identifier = "WeatherCollectionViewCell"
-    private var weatherInfo: WeatherForecast?
-    
-    private lazy var celciusLabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 24, weight: .bold)
-        label.text = "°C"
-        label.textColor = .label
-        return label
-    }()
-    
-    
-}
