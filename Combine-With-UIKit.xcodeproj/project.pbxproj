@@ -12,6 +12,7 @@
 
 /* Begin PBXFileReference section */
 		63A58C352DD6E7C500C6BC9D /* Combine-With-UIKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Combine-With-UIKit.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		63DFF99C2DEF51190090895A /* API_Key.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = API_Key.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -149,6 +150,7 @@
 /* Begin XCBuildConfiguration section */
 		63A58C492DD6E7C700C6BC9D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 63DFF99C2DEF51190090895A /* API_Key.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -176,6 +178,7 @@
 		};
 		63A58C4A2DD6E7C700C6BC9D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 63DFF99C2DEF51190090895A /* API_Key.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

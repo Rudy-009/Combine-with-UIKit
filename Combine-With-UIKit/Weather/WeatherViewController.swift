@@ -10,18 +10,16 @@ import Combine
 
 class WeatherViewController: UIViewController {
 
-    private let weatherView = WeatherView() // 수정된 WeatherView 인스턴스 생성 [2]
+    private let weatherView = WeatherView()
     private var forecasts: [WeatherForecast] = []
     private var viewModel = WeatherViewModel()
     private var cancellables: Set<AnyCancellable> = []
 
     override func loadView() {
-        print("WeatherViewController, loadView")
         self.view = weatherView
     }
 
     override func viewDidLoad() {
-        print("WeatherViewController, viewDidLoad")
         self.addActions()
         super.viewDidLoad()
         

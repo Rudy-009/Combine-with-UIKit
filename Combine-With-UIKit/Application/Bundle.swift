@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+extension Bundle {
+    var weatherAPIKey: String? {
+        return infoDictionary?["Weather_API_Key"] as? String
+    }
+}

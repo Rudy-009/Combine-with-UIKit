@@ -6,6 +6,7 @@
 //
 
 import Combine
+import Foundation
 
 class WeatherViewModel: ObservableObject {
     
@@ -19,10 +20,21 @@ class WeatherViewModel: ObservableObject {
             .map { $0?.list ?? [] }
             .assign(to: \.forecastList, on: self)
             .store(in: &cancellables)
+        guard let weatherAPIKey = Bundle.main.weatherAPIKey else {
+            print("API 키를 로드하지 못했습니다.")
+            return
+        }
+    }
+    
+    func getWeatherData() {
+        
+    }
+    
+    func deleteData() {
+        forecastList.removeAll()
     }
     
     func loadSampleData() {
-        print("WeatherViewModel, loadSampleData")
         // WeatherModel.swift에 정의된 구조체를 기반으로 예시 데이터를 만듭니다. [1]
         // 이 부분은 실제 API 응답을 모방한 더미 데이터입니다.
         // 날짜 문자열은 API 응답 형식("yyyy-MM-dd HH:mm:ss")을 따릅니다.
@@ -57,7 +69,5 @@ class WeatherViewModel: ObservableObject {
 
         self.forecastList = [forecast1, forecast2, forecast3, forecast4, forecast1, forecast2, forecast3]
     }
-    func deleteData() {
-        forecastList.removeAll()
-    }
+    
 }
