@@ -1,0 +1,28 @@
+# Xcode 기본 무시 파일
+.DS_Store
+build/
+DerivedData/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+
+# CocoaPods
+Pods/
+
+# 사용자 설정 파일
+*.xcuserdatad
+
+# 로그 및 임시 파일
+*.log
+*.tmp
+
+# xconfig 파일 무시
+*.xcconfig
