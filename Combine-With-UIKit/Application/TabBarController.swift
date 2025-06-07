@@ -41,5 +41,6 @@ class TabBarController: UITabBarController,  UITabBarControllerDelegate {
         
         //탭바컨트롤러에 뷰 컨트롤러를 array형식으로 넣어주면 탭바가 완성됩니다.
         self.viewControllers = [tabOne, tabTwo, tabThree, tabFour, tabFive]
+        self.tabBarController?.selectedIndex = 1
     }
 }

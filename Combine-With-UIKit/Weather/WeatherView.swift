@@ -18,6 +18,15 @@ class WeatherView: UIView {
         return label
     }()
     
+    public lazy var searchTextField: UITextField = {
+        let textField = UITextField()
+        textField.borderStyle = .roundedRect
+        textField.font = .systemFont(ofSize: 20, weight: .bold)
+        return textField
+    }()
+    
+    public lazy var button = ConfirmButton()
+    
     public var deleteDataButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "trash.circle"), for: .normal)
@@ -46,6 +55,8 @@ class WeatherView: UIView {
     
     private func setup() {
         self.addSubview(label)
+        self.addSubview(searchTextField)
+        self.addSubview(button)
         self.addSubview(tableView)
         self.addSubview(deleteDataButton)
         self.addSubview(refreshButton)
@@ -54,6 +65,22 @@ class WeatherView: UIView {
             make.centerX.equalToSuperview()
             make.height.equalTo(30)
             make.top.equalToSuperview().offset(100)
+        }
+        
+        button.configure(labelText: "검색")
+        button.available()
+        button.snp.makeConstraints { make in
+            make.top.equalTo(label.snp.bottom).offset(20)
+            make.height.equalTo(40)
+            make.width.equalTo(60)
+            make.trailing.equalToSuperview().offset(-30)
+        }
+        
+        searchTextField.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(30)
+            make.trailing.equalTo(button.snp.leading).offset(-20)
+            make.height.equalTo(40)
+            make.top.equalTo(label.snp.bottom).offset(20)
         }
         
         deleteDataButton.snp.makeConstraints { make in
@@ -69,7 +96,7 @@ class WeatherView: UIView {
         }
 
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(label.snp.bottom).offset(20)
+            make.top.equalTo(searchTextField.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(10)
             make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-20)
         }

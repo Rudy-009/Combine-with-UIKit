@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6331512E2DF6799600536AE3 /* API_Key.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 6331510A2DF6799600536AE3 /* API_Key.xcconfig */; };
 		63EE8D132DD71B4D008A07AA /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 63EE8D122DD71B4D008A07AA /* SnapKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6331510A2DF6799600536AE3 /* API_Key.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = API_Key.xcconfig; sourceTree = "<group>"; };
 		63A58C352DD6E7C500C6BC9D /* Combine-With-UIKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Combine-With-UIKit.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		63DFF99C2DEF51190090895A /* API_Key.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = API_Key.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -48,11 +50,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		633151092DF6799600536AE3 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				63DFF99C2DEF51190090895A /* API_Key.xcconfig */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		63A58C2C2DD6E7C500C6BC9D = {
 			isa = PBXGroup;
 			children = (
 				63A58C372DD6E7C500C6BC9D /* Combine-With-UIKit */,
 				63A58C362DD6E7C500C6BC9D /* Products */,
+				633151092DF6799600536AE3 /* Recovered References */,
+				6331510A2DF6799600536AE3 /* API_Key.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -132,6 +144,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6331512E2DF6799600536AE3 /* API_Key.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
