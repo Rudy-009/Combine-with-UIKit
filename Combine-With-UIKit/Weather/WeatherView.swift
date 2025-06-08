@@ -25,7 +25,7 @@ class WeatherView: UIView {
         return textField
     }()
     
-    public lazy var button = ConfirmButton()
+    public lazy var searchButton = ConfirmButton()
     
     public var deleteDataButton: UIButton = {
         let button = UIButton(type: .system)
@@ -56,7 +56,7 @@ class WeatherView: UIView {
     private func setup() {
         self.addSubview(label)
         self.addSubview(searchTextField)
-        self.addSubview(button)
+        self.addSubview(searchButton)
         self.addSubview(tableView)
         self.addSubview(deleteDataButton)
         self.addSubview(refreshButton)
@@ -67,9 +67,9 @@ class WeatherView: UIView {
             make.top.equalToSuperview().offset(100)
         }
         
-        button.configure(labelText: "검색")
-        button.available()
-        button.snp.makeConstraints { make in
+        searchButton.configure(labelText: "검색")
+        searchButton.available()
+        searchButton.snp.makeConstraints { make in
             make.top.equalTo(label.snp.bottom).offset(20)
             make.height.equalTo(40)
             make.width.equalTo(60)
@@ -78,7 +78,7 @@ class WeatherView: UIView {
         
         searchTextField.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(30)
-            make.trailing.equalTo(button.snp.leading).offset(-20)
+            make.trailing.equalTo(searchButton.snp.leading).offset(-20)
             make.height.equalTo(40)
             make.top.equalTo(label.snp.bottom).offset(20)
         }

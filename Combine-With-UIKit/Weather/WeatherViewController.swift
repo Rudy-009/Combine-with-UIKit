@@ -42,11 +42,18 @@ extension WeatherViewController {
     func addActions() {
         self.weatherView.deleteDataButton.addTarget(self, action: #selector(deleteData), for: .touchUpInside)
         self.weatherView.refreshButton.addTarget(self, action: #selector(refresh), for: .touchUpInside)
+        self.weatherView.searchButton.addTarget(self, action: #selector(search), for: .touchUpInside)
+    }
+    
+    @objc
+    private func search() {
+        guard let city = self.weatherView.searchTextField.text else { return }
+        viewModel.getWeatherData(from: city)
     }
     
     @objc
     private func refresh() {
-        self.viewModel.loadSampleData()
+        self.viewModel.getWeatherData(from: viewModel.city)
     }
     
     @objc
@@ -84,5 +91,3 @@ extension WeatherViewController: UITableViewDelegate {
         print("Selected forecast for: \(selectedForecast.dtTxt)")
     }
 }
-
-
