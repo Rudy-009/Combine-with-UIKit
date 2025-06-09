@@ -29,7 +29,7 @@ class WeatherViewController: UIViewController {
                 self?.weatherView.tableView.reloadData()
             }
             .store(in: &cancellables)
-        viewModel.loadSampleData()
+        
         
         weatherView.tableView.dataSource = self
         weatherView.tableView.delegate = self
@@ -48,17 +48,43 @@ extension WeatherViewController {
     @objc
     private func search() {
         guard let city = self.weatherView.searchTextField.text else { return }
-        viewModel.getWeatherData(from: city)
+        self.viewModel.getWeatherData(from: city) { result in
+            self.showAlert(result)
+        }
     }
     
     @objc
     private func refresh() {
-        self.viewModel.getWeatherData(from: viewModel.city)
+        self.viewModel.getWeatherData(from: viewModel.city) { result in
+            self.showAlert(result)
+        }
     }
     
     @objc
     private func deleteData() {
         self.viewModel.deleteData()
+    }
+}
+
+//MARK: - Alert
+extension WeatherViewController {
+    func showAlert(_ result: FetchWeatherResult) {
+        var alert = UIAlertController(title: "", message: "", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+        alert.addAction(okAction)
+        switch result {
+        case .success:
+            return
+        case .failedToFetchCityLocation:
+            alert.title = "잘못된 도시이름입니다."
+            alert.message = "올바른 도시 이름을 입력해주세요."
+        case .failedToFetchCityWeather:
+            alert.title = "날씨 정보 불러오기 실패."
+            alert.message = "네트워크를 확인해주세요."
+        }
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
     }
 }
 

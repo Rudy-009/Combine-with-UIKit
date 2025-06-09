@@ -12,6 +12,7 @@ class WeatherViewModel: ObservableObject {
     
     @Published var weatherResponse: WeatherResponse?
     @Published var forecastList: [WeatherForecast] = []
+    @Published var isLoading: Bool = false
     var city: String = ""
     
     private var cancellables = Set<AnyCancellable>()
@@ -23,8 +24,9 @@ class WeatherViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    func getWeatherData(from city: String) {
+    func getWeatherData(from city: String, completion: @escaping (FetchWeatherResult) -> Void) {
         self.city = city
+        isLoading = true
         fetchCoordinates(for: city) { result in
             switch result {
             case .success(let location):
@@ -33,15 +35,18 @@ class WeatherViewModel: ObservableObject {
                     case .success(let response):
                         DispatchQueue.main.async {
                             self.forecastList = response.list
+                            completion(.success)
                         }
                     case .failure(_):
+                        completion(.failedToFetchCityWeather)
                         break
                     }
                 }
-            case .failure(let error):
-                print("에러: \(error)")
+            case .failure(_):
+                completion(.failedToFetchCityLocation)
             }
         }
+        isLoading = false
     }
     
     func deleteData() {
@@ -97,6 +102,10 @@ class WeatherViewModel: ObservableObject {
         }
         task.resume()
     }
+}
+
+enum FetchWeatherResult {
+    case success, failedToFetchCityLocation, failedToFetchCityWeather
 }
 
 struct Location: Decodable {
