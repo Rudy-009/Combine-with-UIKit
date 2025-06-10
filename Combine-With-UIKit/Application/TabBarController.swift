@@ -12,12 +12,6 @@ class TabBarController: UITabBarController,  UITabBarControllerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        // Do any additional setup after loading the view.
-    }
-      
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
         let tabOne = UINavigationController(rootViewController: KeyboardViewController()) // 네비게이션 컨트롤러 없는 뷰컨트롤러
         //탭바를 아름답게 꾸며주겠습니다. 타이틀도 넣어주고 이미지도 넣어줍니다.
         let tabOneBarItem = UITabBarItem( title: nil, image: UIImage(systemName: "keyboard.fill"), tag: 0)
@@ -41,6 +35,10 @@ class TabBarController: UITabBarController,  UITabBarControllerDelegate {
         
         //탭바컨트롤러에 뷰 컨트롤러를 array형식으로 넣어주면 탭바가 완성됩니다.
         self.viewControllers = [tabOne, tabTwo, tabThree, tabFour, tabFive]
-        self.tabBarController?.selectedIndex = 1
+        self.selectedIndex = 1
+    }
+      
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
     }
 }

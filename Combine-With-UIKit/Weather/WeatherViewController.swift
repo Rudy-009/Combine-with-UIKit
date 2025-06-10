@@ -30,6 +30,18 @@ class WeatherViewController: UIViewController {
             }
             .store(in: &cancellables)
         
+        viewModel.$isLoading
+            .sink { [weak self] isLoading in
+                if isLoading {
+                    self?.weatherView.indicator.startAnimating()
+                } else {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        self?.weatherView.indicator.stopAnimating()
+                    }
+                }
+            }
+            .store(in: &cancellables)
+        
         weatherView.tableView.dataSource = self
         weatherView.tableView.delegate = self
     }

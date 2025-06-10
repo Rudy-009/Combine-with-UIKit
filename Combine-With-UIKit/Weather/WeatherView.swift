@@ -48,6 +48,12 @@ class WeatherView: UIView {
         return tableView
     }()
     
+    public let indicator: UIActivityIndicatorView = {
+       let indicator = UIActivityIndicatorView(style: .large)
+        indicator.color = .TB
+        return indicator
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -58,6 +64,7 @@ class WeatherView: UIView {
         self.addSubview(searchTextField)
         self.addSubview(searchButton)
         self.addSubview(tableView)
+        self.addSubview(indicator)
         self.addSubview(deleteDataButton)
         self.addSubview(refreshButton)
         
@@ -99,6 +106,10 @@ class WeatherView: UIView {
             make.top.equalTo(searchTextField.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(10)
             make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-20)
+        }
+        
+        indicator.snp.makeConstraints { make in
+            make.center.equalTo(tableView.snp.center)
         }
     }
     
