@@ -30,7 +30,6 @@ class WeatherViewController: UIViewController {
             }
             .store(in: &cancellables)
         
-        
         weatherView.tableView.dataSource = self
         weatherView.tableView.delegate = self
     }
@@ -69,7 +68,7 @@ extension WeatherViewController {
 //MARK: - Alert
 extension WeatherViewController {
     func showAlert(_ result: FetchWeatherResult) {
-        var alert = UIAlertController(title: "", message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: "", message: "", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
         alert.addAction(okAction)
         switch result {
