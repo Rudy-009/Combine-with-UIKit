@@ -46,6 +46,10 @@ class WeatherViewController: UIViewController {
         weatherView.tableView.delegate = self
     }
     
+    deinit {
+        cancellables.removeAll()
+    }
+    
 }
 
 // MARK: - Button Actions
