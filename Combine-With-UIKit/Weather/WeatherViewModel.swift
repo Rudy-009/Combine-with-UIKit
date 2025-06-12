@@ -10,10 +10,11 @@ import Foundation
 
 class WeatherViewModel: ObservableObject {
     
+    @Published var location: Location?
     @Published var weatherResponse: WeatherResponse?
     @Published var forecastList: [WeatherForecast] = []
     @Published var isLoading: Bool = false
-    var city: String = ""
+    @Published var weatherResult: FetchWeatherResult?
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -22,90 +23,85 @@ class WeatherViewModel: ObservableObject {
             .map { $0?.list ?? [] }
             .assign(to: \.forecastList, on: self)
             .store(in: &cancellables)
+        // location의 값에 변화가 생기면, 데이터를 불러온다.
+        $location
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { _ in
+                self.getWeatherData()
+            })
+            .store(in: &cancellables)
     }
     
-    func getWeatherData(from city: String, completion: @escaping (FetchWeatherResult) -> Void) {
-        self.city = city
-        isLoading = true
-        fetchCoordinates(for: city) { result in
-            switch result {
-            case .success(let location):
-                self.fetchWeatherData(from: location) { result in
-                    switch result {
-                    case .success(let response):
-                        DispatchQueue.main.async {
-                            self.forecastList = response.list
-                            completion(.success)
-                        }
-                    case .failure(_):
-                        completion(.failedToFetchCityWeather)
-                        break
-                    }
-                }
-            case .failure(_):
-                completion(.failedToFetchCityLocation)
-            }
-        }
-        isLoading = false
+    func removeCancellables() {
+        cancellables.removeAll()
     }
     
     func deleteData() {
         forecastList.removeAll()
     }
-
-    func fetchCoordinates(for city: String, completion: @escaping (Result<Location, Error>) -> Void) {
+    
+    func fetchWeatherData(of city: String) {
+        getLocation(of: city)
+    }
+    
+    func getLocation(of city: String) {
         guard let weatherAPIKey = Bundle.main.weatherAPIKey else {
-            print("API 키를 로드하지 못했습니다.")
             return
         }
         let urlString = "http://api.openweathermap.org/geo/1.0/direct?q=\(city),KR&limit=1&appid=\(weatherAPIKey)"
         guard let url = URL(string: urlString) else { return }
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            guard let data = data else { return }
-            do {
-                let locations = try JSONDecoder().decode([Location].self, from: data)
-                if let first = locations.first {
-                    completion(.success(first))
-                } else {
-                    completion(.failure(NSError(domain: "No location found", code: 0)))
+        URLSession.shared.dataTaskPublisher(for: url)
+            .map(\.data)
+            .decode(type: [Location].self, decoder: JSONDecoder())
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let error):
+                    self.weatherResult = .cityNotFound
+                    print("getLocation failed: \(error)")
+                case .finished:
+                    break
                 }
-            } catch {
-                completion(.failure(error))
-            }
-        }
-        task.resume()
+            }, receiveValue: { locations in
+                self.location = locations.first
+            })
+            .store(in: &cancellables)
     }
     
-    func fetchWeatherData(from location: Location, completion: @escaping (Result<WeatherResponse, Error>) -> Void) {
+    func getWeatherData() {
+        self.isLoading = true
         guard let weatherAPIKey = Bundle.main.weatherAPIKey else {
-            print("API 키를 로드하지 못했습니다.")
             return
         }
-        let urlString =  "http://api.openweathermap.org/data/2.5/forecast?lat=\(location.lat)&lon=\(location.lon)&appid=\(weatherAPIKey)"
-        guard let url = URL(string: urlString) else { return }
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            guard let data = data else { return }
-            do {
-                let response = try JSONDecoder().decode(WeatherResponse.self, from: data)
-                completion(.success(response))
-            } catch {
-                completion(.failure(error))
-            }
+        guard let _ = self.location else {
+            return
         }
-        task.resume()
+        let urlString =  "http://api.openweathermap.org/data/2.5/forecast?lat=\(self.location!.lat)&lon=\(self.location!.lon)&appid=\(weatherAPIKey)"
+        guard let url = URL(string: urlString) else { return }
+        URLSession.shared.dataTaskPublisher(for: url)
+            .map(\.data)
+            .decode(type: WeatherResponse.self, decoder: JSONDecoder())
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let error):
+                    self.weatherResult = .failedToFetchCityWeather
+                    print("getWeatherData failed: \(error)")
+                case .finished:
+                    break
+                }
+                self.isLoading = false
+            }, receiveValue: { response in
+                DispatchQueue.main.async {
+                    self.weatherResult = .success
+                    self.weatherResponse = response
+                }
+            })
+            .store(in: &cancellables)
     }
+    
 }
 
 enum FetchWeatherResult {
-    case success, failedToFetchCityLocation, failedToFetchCityWeather
+    case success, cityNotFound, failedToFetchCityWeather, noCityTyped
 }
 
 struct Location: Decodable {

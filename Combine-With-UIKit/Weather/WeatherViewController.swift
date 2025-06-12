@@ -30,14 +30,26 @@ class WeatherViewController: UIViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.$isLoading
-            .sink { [weak self] isLoading in
-                if isLoading {
-                    self?.weatherView.indicator.startAnimating()
-                } else {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        self?.weatherView.indicator.stopAnimating()
-                    }
+        viewModel.$weatherResult
+            .sink { [weak self] result in
+                let alert = UIAlertController(title: "", message: "", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "Confirm", style: .default, handler: nil)
+                alert.addAction(okAction)
+                switch result {
+                case .none, .success:
+                    return
+                case .cityNotFound:
+                    alert.title = "잘못된 도시이름입니다."
+                    alert.message = "올바른 도시 이름을 입력해주세요."
+                case .failedToFetchCityWeather:
+                    alert.title = "날씨 정보 불러오기 실패."
+                    alert.message = "네트워크를 확인해 주세요."
+                case .noCityTyped:
+                    alert.title = "도시를 입력하지 않았습니다."
+                    alert.message = "한국의 도시 이름을 입력해주세요."
+                }
+                DispatchQueue.main.async {
+                    self?.present(alert, animated: true, completion: nil)
                 }
             }
             .store(in: &cancellables)
@@ -47,6 +59,7 @@ class WeatherViewController: UIViewController {
     }
     
     deinit {
+        viewModel.removeCancellables()
         cancellables.removeAll()
     }
     
@@ -54,6 +67,7 @@ class WeatherViewController: UIViewController {
 
 // MARK: - Button Actions
 extension WeatherViewController {
+    
     func addActions() {
         self.weatherView.deleteDataButton.addTarget(self, action: #selector(deleteData), for: .touchUpInside)
         self.weatherView.refreshButton.addTarget(self, action: #selector(refresh), for: .touchUpInside)
@@ -63,43 +77,30 @@ extension WeatherViewController {
     @objc
     private func search() {
         guard let city = self.weatherView.searchTextField.text else { return }
-        self.viewModel.getWeatherData(from: city) { result in
-            self.showAlert(result)
-        }
+        self.viewModel.fetchWeatherData(of: city)
+        
+        viewModel.$isLoading
+            .sink { [weak self] isLoading in
+                if isLoading {
+                    self?.weatherView.indicator.isHidden = false
+                    self?.weatherView.indicator.startAnimating()
+                } else {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        self?.weatherView.indicator.stopAnimating()
+                    }
+                }
+            }
+            .store(in: &cancellables)
     }
     
     @objc
     private func refresh() {
-        self.viewModel.getWeatherData(from: viewModel.city) { result in
-            self.showAlert(result)
-        }
+        self.viewModel.getWeatherData()
     }
     
     @objc
     private func deleteData() {
         self.viewModel.deleteData()
-    }
-}
-
-//MARK: - Alert
-extension WeatherViewController {
-    func showAlert(_ result: FetchWeatherResult) {
-        let alert = UIAlertController(title: "", message: "", preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
-        alert.addAction(okAction)
-        switch result {
-        case .success:
-            return
-        case .failedToFetchCityLocation:
-            alert.title = "잘못된 도시이름입니다."
-            alert.message = "올바른 도시 이름을 입력해주세요."
-        case .failedToFetchCityWeather:
-            alert.title = "날씨 정보 불러오기 실패."
-            alert.message = "네트워크를 확인해주세요."
-        }
-        DispatchQueue.main.async {
-            self.present(alert, animated: true, completion: nil)
-        }
     }
 }
 
