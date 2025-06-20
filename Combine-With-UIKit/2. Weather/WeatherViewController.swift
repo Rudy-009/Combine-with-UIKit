@@ -20,6 +20,7 @@ class WeatherViewController: UIViewController {
     }
 
     override func viewDidLoad() {
+        self.hideKeyboardWhenTappedAround()
         self.addActions()
         super.viewDidLoad()
         
