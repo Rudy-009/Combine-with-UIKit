@@ -64,7 +64,7 @@ class WeatherViewModel: ObservableObject {
     
     func getWeatherData() {
         guard let location = location else { return }
-        
+        self.isLoading = true
         networkService.fetchWeather(lat: location.lat, lon: location.lon)
             .receive(on: DispatchQueue.main)
             .sink(

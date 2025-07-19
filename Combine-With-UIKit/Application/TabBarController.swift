@@ -21,7 +21,7 @@ class TabBarController: UITabBarController,  UITabBarControllerDelegate {
         let tabTwoBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "sun.max"), tag: 1)
         tabTwo.tabBarItem = tabTwoBarItem
         
-        let tabThree = UINavigationController(rootViewController: InputViewController())
+        let tabThree = UINavigationController(rootViewController: SignUpViewController())
         let tabThreeBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "arrowshape.down.circle.fill"), tag: 2)
         tabThree.tabBarItem = tabThreeBarItem
         
@@ -35,7 +35,7 @@ class TabBarController: UITabBarController,  UITabBarControllerDelegate {
         
         //탭바컨트롤러에 뷰 컨트롤러를 array형식으로 넣어주면 탭바가 완성됩니다.
         self.viewControllers = [tabOne, tabTwo, tabThree, tabFour, tabFive]
-        self.selectedIndex = 1
+        self.selectedIndex = 2
     }
       
     override func viewWillAppear(_ animated: Bool) {
