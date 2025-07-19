@@ -24,6 +24,8 @@ final class SignUpView: UIView {
     let passwordConfirmLabel = UILabel()
     let passwordConfirmTextField = UITextField()
     
+    let submitButton = ConfirmButton()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white
@@ -48,13 +50,15 @@ final class SignUpView: UIView {
         
         passwordTextField.isSecureTextEntry = true
         passwordConfirmTextField.isSecureTextEntry = true
+        submitButton.configure(labelText: "가입")
     }
     
     private func setConstraints() {
         addSubview(scrollView)
+        addSubview(submitButton)
         scrollView.addSubview(contentView)
         
-        [nicknameLabel, nicknameTextField, nameLabel, nameTextField, emailLabel, emailTextField, passwordLabel, passwordTextField, passwordConfirmLabel, passwordConfirmTextField].forEach {
+        [nicknameLabel, nicknameTextField, nameLabel, nameTextField, emailLabel, emailTextField, passwordLabel, passwordTextField, passwordConfirmLabel, passwordConfirmTextField, ].forEach {
             contentView.addSubview($0)
         }
         
@@ -120,7 +124,89 @@ final class SignUpView: UIView {
             make.top.equalTo(passwordConfirmLabel.snp.bottom).offset(paddingLblTxt)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(44)
-            make.bottom.equalToSuperview().offset(-20)
+            // make.bottom.equalToSuperview().offset(-20)
+        }
+        
+        submitButton.snp.makeConstraints { make in
+            make.trailing.leading.equalToSuperview().inset(20)
+            make.bottom.equalToSuperview().offset(-40)
+            make.height.equalTo(44)
         }
     }
-} 
+    
+    enum SignUpComponetType {
+        case nickname
+        case name
+        case email
+        case password
+        case passwordConfirm
+        
+        func succeedText() -> String {
+            switch self {
+            case .nickname:
+                return "사용가능한 닉네임입니다."
+            case .name:
+                return "이름"
+            case .email:
+                return "이메일"
+            case .password:
+                return "비밀번호"
+            case .passwordConfirm:
+                return "비밀번호 확인"
+            }
+        }
+        
+        func errorMessage() -> String {
+            switch self {
+            case .nickname:
+                return "4~12자의 알파벳과 숫자를 사용하세요."
+            case .name:
+                return "2~10자의 알파벳과 숫자를 사용하세요."
+            case .email:
+                return "올바른 이메일 형식이 아닙니다."
+            case .password:
+                return "비밀번호 조건"
+            case .passwordConfirm:
+                return "입력하신 비밀번호와 일치하지 않습니다."
+            }
+        }
+    }
+    
+    enum ValidatoinColor {
+        case succeed, failed
+        
+        func color() -> UIColor {
+            switch self {
+            case .succeed:
+                return .TB
+            case .failed:
+                return .red400
+            }
+        }
+    }
+    
+    func checkValidation(type: SignUpComponetType, isValid: Bool) {
+        switch type {
+        case .nickname:
+            self.nicknameLabel.text = isValid ? type.succeedText() : type.errorMessage()
+            self.nicknameLabel.textColor = isValid ? ValidatoinColor.succeed.color() : ValidatoinColor.failed.color()
+        case .name:
+            self.nameLabel.text = isValid ? type.succeedText() : type.errorMessage()
+            self.nameLabel.textColor = isValid ? ValidatoinColor.succeed.color() : ValidatoinColor.failed.color()
+        case .email:
+            self.emailLabel.text = isValid ? type.succeedText() : type.errorMessage()
+            self.emailLabel.textColor = isValid ? ValidatoinColor.succeed.color() : ValidatoinColor.failed.color()
+        case .password:
+            self.passwordLabel.text = isValid ? type.succeedText() : type.errorMessage()
+            self.passwordLabel.textColor = isValid ? ValidatoinColor.succeed.color() : ValidatoinColor.failed.color()
+        case .passwordConfirm:
+            self.passwordConfirmLabel.text = isValid ? type.succeedText() : type.errorMessage()
+            self.passwordConfirmLabel.textColor = isValid ? ValidatoinColor.succeed.color() : ValidatoinColor.failed.color()
+        }
+    }
+}
+
+import SwiftUI
+#Preview {
+    SignUpViewController()
+}
