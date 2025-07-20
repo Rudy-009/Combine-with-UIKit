@@ -4,7 +4,7 @@ import Combine
 final class SignUpViewModel {
     
     @Published var nickname: String = ""
-    @Published var isNicknameValid: Bool = false
+    @Published var isNicknameValid: Bool?
     @Published var isCheckingNickname: Bool = false
     
     @Published var userName: String = ""

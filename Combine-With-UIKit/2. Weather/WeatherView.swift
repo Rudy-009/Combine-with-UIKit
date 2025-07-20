@@ -48,7 +48,7 @@ class WeatherView: UIView {
         return tableView
     }()
     
-    public let indicator: UIActivityIndicatorView = {
+public let indicator: UIActivityIndicatorView = {
        let indicator = UIActivityIndicatorView(style: .large)
         indicator.color = .TB
         return indicator

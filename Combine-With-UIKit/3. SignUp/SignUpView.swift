@@ -11,6 +11,11 @@ final class SignUpView: UIView {
     
     let nicknameLabel = UILabel()
     let nicknameTextField = UITextField()
+    let nicknameIndicator: UIActivityIndicatorView = {
+       let indicator = UIActivityIndicatorView(style: .large)
+        indicator.color = .TB
+        return indicator
+    }()
     
     let nameLabel = UILabel()
     let nameTextField = UITextField()
@@ -31,10 +36,17 @@ final class SignUpView: UIView {
         backgroundColor = .white
         configureUI()
         setConstraints()
+        configureScrollView()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func configureScrollView() {
+        scrollView.isScrollEnabled = true
+        scrollView.isUserInteractionEnabled = true
+        scrollView.delaysContentTouches = false
     }
     
     private func configureUI() {
@@ -55,10 +67,9 @@ final class SignUpView: UIView {
     
     private func setConstraints() {
         addSubview(scrollView)
-        addSubview(submitButton)
         scrollView.addSubview(contentView)
         
-        [nicknameLabel, nicknameTextField, nameLabel, nameTextField, emailLabel, emailTextField, passwordLabel, passwordTextField, passwordConfirmLabel, passwordConfirmTextField, ].forEach {
+        [submitButton, nicknameLabel, nicknameTextField, nicknameIndicator, nameLabel, nameTextField, emailLabel, emailTextField, passwordLabel, passwordTextField, passwordConfirmLabel, passwordConfirmTextField, ].forEach {
             contentView.addSubview($0)
         }
         
@@ -71,8 +82,15 @@ final class SignUpView: UIView {
             make.width.equalTo(scrollView.frameLayoutGuide)
         }
         
+        submitButton.snp.makeConstraints { make in
+            make.top.equalTo(self.safeAreaLayoutGuide)
+            make.height.equalTo(44)
+            make.trailing.equalToSuperview().inset(20)
+            make.width.equalTo(100)
+        }
+        
         nicknameLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(20)
+            make.top.equalTo(submitButton.snp.bottom).offset(20)
             make.leading.equalToSuperview().offset(20)
         }
         
@@ -80,6 +98,10 @@ final class SignUpView: UIView {
             make.top.equalTo(nicknameLabel.snp.bottom).offset(8)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(44)
+        }
+        
+        nicknameIndicator.snp.makeConstraints { make in
+            make.centerY.trailing.top.bottom.equalTo(nicknameTextField)
         }
         
         nameLabel.snp.makeConstraints { make in
@@ -124,14 +146,10 @@ final class SignUpView: UIView {
             make.top.equalTo(passwordConfirmLabel.snp.bottom).offset(paddingLblTxt)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(44)
-            // make.bottom.equalToSuperview().offset(-20)
+            make.bottom.equalToSuperview().offset(-20)
         }
         
-        submitButton.snp.makeConstraints { make in
-            make.trailing.leading.equalToSuperview().inset(20)
-            make.bottom.equalToSuperview().offset(-40)
-            make.height.equalTo(44)
-        }
+        
     }
     
     enum SignUpComponetType {
@@ -185,7 +203,8 @@ final class SignUpView: UIView {
         }
     }
     
-    func checkValidation(type: SignUpComponetType, isValid: Bool) {
+    func checkValidation(type: SignUpComponetType, isValid: Bool?) {
+        guard let isValid = isValid else { return }
         switch type {
         case .nickname:
             self.nicknameLabel.text = isValid ? type.succeedText() : type.errorMessage()

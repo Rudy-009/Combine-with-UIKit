@@ -33,11 +33,15 @@ extension SignUpViewController {
             .store(in: &cancellables)
         
         signUpViewModel.$isCheckingNickname
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] isChecking in
                 if isChecking {
-                    
+                    self?.signUpView.nicknameIndicator.isHidden = false
+                    self?.signUpView.nicknameIndicator.startAnimating()
                 } else {
-                
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        self?.signUpView.nicknameIndicator.stopAnimating()
+                    }
                 }
             }
             .store(in: &cancellables)
