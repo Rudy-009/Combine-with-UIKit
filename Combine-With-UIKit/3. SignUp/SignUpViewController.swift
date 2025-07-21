@@ -17,6 +17,7 @@ final class SignUpViewController: UIViewController {
         self.hideKeyboardWhenTappedAround()
         self.setNameTextFieldPublisher()
         self.setNicknameTextFieldPublisher()
+        self.setEmailTextFieldPublisher()
     }
 }
 
@@ -24,8 +25,8 @@ final class SignUpViewController: UIViewController {
 
 // 3. 유효성 검사완료 시 결과를 화면에 보여준다.
 extension SignUpViewController {
+    
     private func setNameTextFieldPublisher() {
-        
         signUpView.nameTextField.textPublisher()
             .assign(to: \.userName, on: signUpViewModel)
             .store(in: &cancellables)
@@ -39,8 +40,8 @@ extension SignUpViewController {
 // 2.1. 유효성 검사중에 indicator가 뜬다.
 // 2.2. 유효성 검사중에 다시 편집(입력/삭제)가 발생하면 유효성 검사를 취소 or 결과를 반영하지 않는다.
 extension SignUpViewController {
+    
     private func setNicknameTextFieldPublisher() {
-        
         signUpView.nicknameTextField.textPublisher()
             .assign(to: \.nickname, on: signUpViewModel)
             .store(in: &cancellables)
@@ -63,6 +64,22 @@ extension SignUpViewController {
                         self?.signUpView.nicknameIndicator.stopAnimating()
                     }
                 }
+            }
+            .store(in: &cancellables)
+    }
+}
+
+// MARK: 이메일
+extension SignUpViewController {
+    
+    private func setEmailTextFieldPublisher() {
+        signUpView.emailTextField.textPublisher()
+            .assign(to: \.enmail, on: signUpViewModel)
+            .store(in: &cancellables)
+        
+        signUpViewModel.$isEmailValid
+            .sink { [weak self] isValid in
+                self?.signUpView.checkValidation(type: .email, isValid: isValid)
             }
             .store(in: &cancellables)
     }

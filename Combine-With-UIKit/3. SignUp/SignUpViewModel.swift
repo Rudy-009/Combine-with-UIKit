@@ -9,7 +9,9 @@ final class SignUpViewModel {
     @Published var nickname: String = ""
     @Published var isNicknameValid: Bool?
     @Published var isCheckingNickname: Bool = false
-    var nicknameWorkItem: DispatchWorkItem?
+    
+    @Published var enmail: String = ""
+    @Published var isEmailValid: Bool?
     
     @Published var isSignUpEnabled: Bool = false
     
@@ -19,6 +21,7 @@ final class SignUpViewModel {
     init() {
         setupUserNameValidation()
         setupNicknameValidation()
+        setupEmailValidation()
     }
     
     private func setupUserNameValidation() {
@@ -55,6 +58,23 @@ final class SignUpViewModel {
                 self?.isNicknameValid = result
             }
         }
+    }
+    
+    private func setupEmailValidation() {
+        $enmail
+            .sink { [weak self] _ in
+                self?.checkEmailValidation()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func checkEmailValidation() {
+        guard !enmail.isEmpty else {
+            isEmailValid = nil
+            return
+        }
+        
+        isEmailValid = enmail.range(of: "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}", options: .regularExpression) != nil
     }
 
 }

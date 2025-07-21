@@ -102,8 +102,7 @@ final class SignUpView: UIView {
         
         nicknameIndicator.color = .TB_2
         nicknameIndicator.snp.makeConstraints { make in
-            make.centerY.trailing.equalTo(nicknameTextField)
-            make.height.width.equalTo(16)
+            make.centerY.trailing.top.bottom.equalTo(nicknameTextField)
         }
         
         nameLabel.snp.makeConstraints { make in
@@ -179,9 +178,9 @@ final class SignUpView: UIView {
         func errorMessage() -> String {
             switch self {
             case .nickname:
-                return "4~12자의 알파벳과 숫자를 사용하세요."
+                return "이미 사용중인 닉네임입니다."
             case .name:
-                return "2~10자의 알파벳과 숫자를 사용하세요."
+                return "2~10자를 적어주세요."
             case .email:
                 return "올바른 이메일 형식이 아닙니다."
             case .password:
