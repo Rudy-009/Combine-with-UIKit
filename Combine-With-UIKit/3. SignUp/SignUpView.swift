@@ -100,8 +100,10 @@ final class SignUpView: UIView {
             make.height.equalTo(44)
         }
         
+        nicknameIndicator.color = .TB_2
         nicknameIndicator.snp.makeConstraints { make in
-            make.centerY.trailing.top.bottom.equalTo(nicknameTextField)
+            make.centerY.trailing.equalTo(nicknameTextField)
+            make.height.width.equalTo(16)
         }
         
         nameLabel.snp.makeConstraints { make in
