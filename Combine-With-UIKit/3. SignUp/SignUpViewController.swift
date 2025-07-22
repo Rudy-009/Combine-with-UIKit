@@ -18,6 +18,8 @@ final class SignUpViewController: UIViewController {
         self.setNameTextFieldPublisher()
         self.setNicknameTextFieldPublisher()
         self.setEmailTextFieldPublisher()
+        self.setPasswordTextFieldPublisher()
+        self.setConfirmPasswordTextFieldPublisher()
     }
 }
 
@@ -78,6 +80,7 @@ extension SignUpViewController {
             .store(in: &cancellables)
         
         signUpViewModel.$isEmailValid
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] isValid in
                 self?.signUpView.checkValidation(type: .email, isValid: isValid)
             }
@@ -85,6 +88,39 @@ extension SignUpViewController {
     }
 }
 
+// MARK: 비밀번호
+extension SignUpViewController {
+    
+    private func setPasswordTextFieldPublisher() {
+        signUpView.passwordTextField.textPublisher()
+            .assign(to: \.password, on: signUpViewModel)
+            .store(in: &cancellables)
+        
+        signUpViewModel.$isPasswordValid
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isValid in
+                self?.signUpView.checkValidation(type: .password, isValid: isValid)
+            }
+            .store(in: &cancellables)
+    }
+}
+
+// MARK: 비밀번호 확인
+extension SignUpViewController {
+    
+    private func setConfirmPasswordTextFieldPublisher() {
+        signUpView.passwordConfirmTextField.textPublisher()
+            .assign(to: \.self.signUpViewModel.confirmPassword, on: self)
+            .store(in: &cancellables)
+        
+        signUpViewModel.$isConfirmPasswordValid
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isValid in
+                self?.signUpView.checkValidation(type: .passwordConfirm, isValid: isValid)
+            }
+            .store(in: &cancellables)
+    }
+}
 
 import SwiftUI
 #Preview {

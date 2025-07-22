@@ -13,6 +13,12 @@ final class SignUpViewModel {
     @Published var enmail: String = ""
     @Published var isEmailValid: Bool?
     
+    @Published var password: String = ""
+    @Published var isPasswordValid: Bool?
+    
+    @Published var confirmPassword: String = ""
+    @Published var isConfirmPasswordValid: Bool? = nil
+    
     @Published var isSignUpEnabled: Bool = false
     
     private var cancellables = Set<AnyCancellable>()
@@ -22,6 +28,8 @@ final class SignUpViewModel {
         setupUserNameValidation()
         setupNicknameValidation()
         setupEmailValidation()
+        setupPasswordValidation()
+        setupConfirmPasswordValidation()
     }
     
     private func setupUserNameValidation() {
@@ -75,6 +83,39 @@ final class SignUpViewModel {
         }
         
         isEmailValid = enmail.range(of: "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}", options: .regularExpression) != nil
+    }
+    
+    private func setupPasswordValidation() {
+        $password
+            .sink { [weak self] _ in
+                self?.checkPasswordValidation()
+                self?.checkConfirmPasswordValidation()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func checkPasswordValidation() {
+        guard !password.isEmpty else {
+            isPasswordValid = nil
+            return
+        }
+        isPasswordValid = password.range(of: "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{10,}$", options: .regularExpression) != nil
+    }
+    
+    private func setupConfirmPasswordValidation() {
+        $confirmPassword
+            .sink { [weak self] _ in
+                self?.checkConfirmPasswordValidation()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func checkConfirmPasswordValidation() {
+        guard !confirmPassword.isEmpty else {
+            isConfirmPasswordValid = nil
+            return
+        }
+        isConfirmPasswordValid = (password == confirmPassword) && isPasswordValid ?? false
     }
 
 }

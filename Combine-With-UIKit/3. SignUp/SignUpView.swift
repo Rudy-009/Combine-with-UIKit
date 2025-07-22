@@ -184,7 +184,7 @@ final class SignUpView: UIView {
             case .email:
                 return "올바른 이메일 형식이 아닙니다."
             case .password:
-                return "비밀번호 조건"
+                return "숫자와 영어를 포함하고 10자 이상이어야 합니다."
             case .passwordConfirm:
                 return "입력하신 비밀번호와 일치하지 않습니다."
             }
@@ -204,7 +204,7 @@ final class SignUpView: UIView {
         }
     }
     
-    func checkValidation(type: SignUpComponetType, isValid: Bool?) {
+func checkValidation(type: SignUpComponetType, isValid: Bool?) {
         guard let isValid = isValid else { return }
         switch type {
         case .nickname:
