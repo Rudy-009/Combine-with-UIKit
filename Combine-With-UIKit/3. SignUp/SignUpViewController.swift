@@ -29,7 +29,7 @@ final class SignUpViewController: UIViewController {
 extension SignUpViewController {
     
     private func setNameTextFieldPublisher() {
-        signUpView.nameTextField.textPublisher()
+        signUpView.nameTextField.textDidChangePublisher()
             .assign(to: \.userName, on: signUpViewModel)
             .store(in: &cancellables)
     }
@@ -44,7 +44,7 @@ extension SignUpViewController {
 extension SignUpViewController {
     
     private func setNicknameTextFieldPublisher() {
-        signUpView.nicknameTextField.textPublisher()
+        signUpView.nicknameTextField.textDidChangePublisher()
             .assign(to: \.nickname, on: signUpViewModel)
             .store(in: &cancellables)
         
@@ -75,7 +75,7 @@ extension SignUpViewController {
 extension SignUpViewController {
     
     private func setEmailTextFieldPublisher() {
-        signUpView.emailTextField.textPublisher()
+        signUpView.emailTextField.textDidChangePublisher()
             .assign(to: \.enmail, on: signUpViewModel)
             .store(in: &cancellables)
         
@@ -92,7 +92,7 @@ extension SignUpViewController {
 extension SignUpViewController {
     
     private func setPasswordTextFieldPublisher() {
-        signUpView.passwordTextField.textPublisher()
+        signUpView.passwordTextField.textDidChangePublisher()
             .assign(to: \.password, on: signUpViewModel)
             .store(in: &cancellables)
         
@@ -109,8 +109,9 @@ extension SignUpViewController {
 extension SignUpViewController {
     
     private func setConfirmPasswordTextFieldPublisher() {
-        signUpView.passwordConfirmTextField.textPublisher()
-            .assign(to: \.self.signUpViewModel.confirmPassword, on: self)
+        
+        signUpView.passwordConfirmTextField.textDidChangePublisher()
+            .assign(to: \.confirmPassword, on: signUpViewModel)
             .store(in: &cancellables)
         
         signUpViewModel.$isConfirmPasswordValid

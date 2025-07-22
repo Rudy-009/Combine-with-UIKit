@@ -22,7 +22,7 @@ class KeyboardViewController: UIViewController, UITextFieldDelegate {
     
     private func setActions() {
         // UITextField를 Combine Publisher로 변환
-        keyboardView.textField.textPublisher()
+        keyboardView.textField.textDidChangePublisher()
             .assign(to: \.input, on: viewModel)
             .store(in: &cancellables)
         
@@ -47,9 +47,10 @@ class KeyboardViewController: UIViewController, UITextFieldDelegate {
 // UITextField를 위한 Publisher 확장
 extension UITextField {
     
-    func textPublisher() -> AnyPublisher<String, Never> {
+    func textDidChangePublisher() -> AnyPublisher<String, Never> {
         NotificationCenter.default
             .publisher(for: UITextField.textDidChangeNotification, object: self)
+            .receive(on: RunLoop.main) // 메인 런루프에서 다음 사이클에 실행하도록 스케줄링
             .compactMap { ($0.object as? UITextField)?.text ?? "" }
             .eraseToAnyPublisher()
     }

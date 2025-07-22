@@ -81,12 +81,12 @@ final class SignUpViewModel {
             isEmailValid = nil
             return
         }
-        
         isEmailValid = enmail.range(of: "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}", options: .regularExpression) != nil
     }
     
     private func setupPasswordValidation() {
         $password
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.checkPasswordValidation()
                 self?.checkConfirmPasswordValidation()
@@ -99,11 +99,13 @@ final class SignUpViewModel {
             isPasswordValid = nil
             return
         }
+        print("\(password), \(confirmPassword)")
         isPasswordValid = password.range(of: "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{10,}$", options: .regularExpression) != nil
     }
     
     private func setupConfirmPasswordValidation() {
         $confirmPassword
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.checkConfirmPasswordValidation()
             }
@@ -115,7 +117,8 @@ final class SignUpViewModel {
             isConfirmPasswordValid = nil
             return
         }
-        isConfirmPasswordValid = (password == confirmPassword) && isPasswordValid ?? false
+        print("\(password), \(confirmPassword)")
+        isConfirmPasswordValid = (password == confirmPassword)
     }
 
 }
