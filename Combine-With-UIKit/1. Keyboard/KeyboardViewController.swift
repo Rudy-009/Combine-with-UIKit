@@ -37,7 +37,6 @@ class KeyboardViewController: UIViewController, UITextFieldDelegate {
             .store(in: &cancellables)
         
         keyboardView.button.addAction(
-            // 요구사항에는 없었지만, 구독을 취소하는 코드를 구현
             UIAction { [weak self] _ in
                 self?.cancellables.removeAll() // 다른 뷰로 넘어갈 때, 쓰면 좋을 코드
             },
