@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6331514A2DF67E3F00536AE3 /* API_Key.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 633151492DF67E3F00536AE3 /* API_Key.xcconfig */; };
 		63EE8D132DD71B4D008A07AA /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 63EE8D122DD71B4D008A07AA /* SnapKit */; };
 /* End PBXBuildFile section */
 
@@ -100,7 +99,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1630;
-				LastUpgradeCheck = 1630;
+				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					63A58C342DD6E7C500C6BC9D = {
 						CreatedOnToolsVersion = 16.3;
@@ -134,7 +133,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6331514A2DF67E3F00536AE3 /* API_Key.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

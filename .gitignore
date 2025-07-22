@@ -26,3 +26,6 @@ Pods/
 
 # xconfig 파일 무시
 *.xcconfig
+
+# 파일
+K.swift
