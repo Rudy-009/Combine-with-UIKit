@@ -30,6 +30,7 @@ final class SignUpViewModel {
         setupEmailValidation()
         setupPasswordValidation()
         setupConfirmPasswordValidation()
+        setupSingUpEnabled()
     }
     
     private func setupUserNameValidation() {
@@ -57,10 +58,10 @@ final class SignUpViewModel {
         isCheckingNickname = true
         isNicknameValid = nil
         
-        // 아래 코드는 네트워크 호출을 가정하여 작성 checkNicknameAvailability가 비동기 네트워크 호출임
+        // 아래 코드는 네트워크 호출을 가정하여 작성
+        // checkNicknameAvailability가 비동기 네트워크 호출임
         DispatchQueue.global().asyncAfter(deadline: .now() + 1.0) { [weak self] in
             let result = self?.nicknameCheckingService.checkNicknameAvailability(nickname)
-            
             DispatchQueue.main.async {
                 self?.isCheckingNickname = false
                 self?.isNicknameValid = result
@@ -99,7 +100,6 @@ final class SignUpViewModel {
             isPasswordValid = nil
             return
         }
-        print("\(password), \(confirmPassword)")
         isPasswordValid = password.range(of: "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{10,}$", options: .regularExpression) != nil
     }
     
@@ -117,8 +117,17 @@ final class SignUpViewModel {
             isConfirmPasswordValid = nil
             return
         }
-        print("\(password), \(confirmPassword)")
         isConfirmPasswordValid = (password == confirmPassword)
+    }
+    
+    private func setupSingUpEnabled() {
+        Publishers.CombineLatest4($isUserNameFilled, $isEmailValid, $isNicknameValid, $isConfirmPasswordValid)
+            .receive(on: DispatchQueue.main)
+            .map { $0 && $1 ?? false && $2 ?? false && $3 ?? false }
+            .sink { [weak self] validations in
+                self?.isSignUpEnabled = validations
+            }
+            .store(in: &cancellables)
     }
 
 }

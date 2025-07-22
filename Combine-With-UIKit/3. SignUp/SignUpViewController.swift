@@ -20,6 +20,7 @@ final class SignUpViewController: UIViewController {
         self.setEmailTextFieldPublisher()
         self.setPasswordTextFieldPublisher()
         self.setConfirmPasswordTextFieldPublisher()
+        self.setSignUpButtonPublisher()
     }
 }
 
@@ -109,7 +110,6 @@ extension SignUpViewController {
 extension SignUpViewController {
     
     private func setConfirmPasswordTextFieldPublisher() {
-        
         signUpView.passwordConfirmTextField.textDidChangePublisher()
             .assign(to: \.confirmPassword, on: signUpViewModel)
             .store(in: &cancellables)
@@ -121,6 +121,23 @@ extension SignUpViewController {
             }
             .store(in: &cancellables)
     }
+}
+
+extension SignUpViewController {
+    
+    private func setSignUpButtonPublisher() {
+        signUpViewModel.$isSignUpEnabled
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isEnabled in
+                if isEnabled {
+                    self?.signUpView.submitButton.available()
+                } else {
+                    self?.signUpView.submitButton.unavailable()
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
 }
 
 import SwiftUI
