@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-class KeyboardViewController: UIViewController, UITextFieldDelegate {
+class KeyboardViewController: UIViewController {
     
     private let keyboardView = KeyboardView()
     private let viewModel = KeyboardViewModel()
@@ -16,7 +16,6 @@ class KeyboardViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         self.view = keyboardView
-        keyboardView.textField.delegate = self
         self.setActions()
     }
     
@@ -42,16 +41,4 @@ class KeyboardViewController: UIViewController, UITextFieldDelegate {
             },
             for: .touchUpInside)
     }
-}
-
-// UITextField를 위한 Publisher 확장
-extension UITextField {
-    
-    func textDidChangePublisher() -> AnyPublisher<String, Never> {
-        NotificationCenter.default
-            .publisher(for: UITextField.textDidChangeNotification, object: self)
-            .map { _ in self.text ?? "" }
-            .eraseToAnyPublisher()
-    }
-
 }
