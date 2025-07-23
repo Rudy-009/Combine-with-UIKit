@@ -50,8 +50,7 @@ extension UITextField {
     func textDidChangePublisher() -> AnyPublisher<String, Never> {
         NotificationCenter.default
             .publisher(for: UITextField.textDidChangeNotification, object: self)
-            .receive(on: RunLoop.main) // 메인 런루프에서 다음 사이클에 실행하도록 스케줄링
-            .compactMap { ($0.object as? UITextField)?.text ?? "" }
+            .map { _ in self.text ?? "" }
             .eraseToAnyPublisher()
     }
 
