@@ -16,6 +16,7 @@ class KeyboardViewController: UIViewController {
     
     override func viewDidLoad() {
         self.view = keyboardView
+        hideKeyboardWhenTappedAround()
         self.setActions()
     }
     
