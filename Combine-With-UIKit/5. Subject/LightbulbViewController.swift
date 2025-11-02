@@ -11,8 +11,8 @@ import SnapKit
 
 final class LighbulbViewController: UIViewController {
     
-    let vc = SwitchViewController()
     private var cancellables: Set<AnyCancellable> = []
+    private var modalCancellable: AnyCancellable?
     
     private lazy var lightbulb: UIImageView = {
         let imageView = UIImageView(image: UIImage(systemName: "lightbulb"))
@@ -30,26 +30,8 @@ final class LighbulbViewController: UIViewController {
     override func viewDidLoad() {
         self.view.backgroundColor = .black
         setUI()
-        subscribe()
     }
-    
-    func subscribe() {
-        vc.lightbulbPublisher
-        .receive(on: DispatchQueue.main)
-        .sink { [weak self] event in
-            guard let self else { return }
-            var lightbulbImage: UIImage?
-            switch event {
-            case .on:
-                lightbulbImage = UIImage(systemName: "lightbulb.max")
-            case .off:
-                lightbulbImage = UIImage(systemName: "lightbulb")
-            }
-            self.lightbulb.image = lightbulbImage
-        }
-        .store(in: &cancellables)
-    }
-    
+        
     func setUI() {
         self.view.addSubview(lightbulb)
         self.view.addSubview(button)
@@ -71,12 +53,43 @@ final class LighbulbViewController: UIViewController {
     
     @objc
     private func showSwitchVC() {
+        let vc = SwitchViewController()
+        
+        // Delegate 지정
+        vc.presentationController?.delegate = self
+        
+        modalCancellable = vc.lightbulbPublisher
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] event in
+            guard let self else { return }
+            var lightbulbImage: UIImage?
+            switch event {
+            case .on:
+                lightbulbImage = UIImage(systemName: "lightbulb.max")
+            case .off:
+                lightbulbImage = UIImage(systemName: "lightbulb")
+            }
+            self.lightbulb.image = lightbulbImage
+        }
+        
         if let sheet = vc.sheetPresentationController {
             sheet.detents = [.medium()]
             sheet.prefersGrabberVisible = true
         }
         self.present(vc, animated: true)
+        
+        print(modalCancellable?.hashValue ?? "nil")
     }
+}
+
+extension LighbulbViewController: UIAdaptivePresentationControllerDelegate {
+    
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        modalCancellable?.cancel()
+        modalCancellable = nil
+        print("after dismiss", modalCancellable?.hashValue ?? "nil")
+    }
+    
 }
 
 enum LightbulbEvent {
