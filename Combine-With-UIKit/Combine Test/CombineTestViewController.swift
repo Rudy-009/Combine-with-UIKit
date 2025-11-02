@@ -12,9 +12,23 @@ class CombineTestViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        testCombineMain()
+        testSchedulerCode()
     }
     
+}
+
+func testSchedulerCode() {
+    let publisher = CurrentValueSubject<String, Never>("Zedd")
+    
+    Just(1)
+        .map { _  in print("Just: \(Thread.current)") } // false
+        .subscribe(on: DispatchQueue.global())
+        .sink { _  in print("Just: \(Thread.current)") } // false
+    
+    publisher
+        .map { _  in print("Subject: \(Thread.current)") } // false
+        .subscribe(on: DispatchQueue.global())
+        .sink { _  in print("Subject: \(Thread.current)") } // false
 }
 
 func testCombineMain() {

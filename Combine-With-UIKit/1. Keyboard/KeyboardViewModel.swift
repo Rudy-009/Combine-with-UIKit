@@ -7,7 +7,7 @@
 
 import Combine
 
-final class KeyboardViewModel: ObservableObject {
+final class KeyboardViewModel {
     
     @Published var input: String = ""
     @Published var isInputValid: Bool = false
